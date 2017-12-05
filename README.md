@@ -9,11 +9,11 @@ Attach the function 'func' to be called when the Instance 'instance' is destroye
 
 
 * pseudoSignal
-  * boolean         .connected  
+  * boolean         .connected, .Connected  
 If the function provided is still connected then this is true. When the object is destroyed this is set to false before the function is called.  
 This can only be false if the object is destroyed or if this is manually disconnected.
 
-  * void            :disconnect()  
+  * void            :disconnect(), :Disconnect()  
 Manually disconnects the connected function before the object is destroyed.
 
   * RBXScriptSignal .connection  
