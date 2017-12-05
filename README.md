@@ -1,7 +1,4 @@
-# roblox-instanceDestroyed
-Detects when an Instance will never re-appear in the game tree. Fires on Destroy and garbage-collection.
-		
-# Documentation:
+# Documentation
 This module can be used to detect when an instance is destroyed at any point after it is used on the object.  
 It will detect when the object is destroyed from the game hierarchy and when it is destroyed from nil.  
 The call returns a pseudo-signal which can be used to check if the function is connected and can be used to disconnect the on-destroy-function without causing it to fire.
