@@ -13,7 +13,8 @@
 		
 	Documentation:
 		This module can be used to detect when an instance is destroyed at any point after it is used on the object.
-		It will detect when the object is destroyed from the game hierarchy and when it is destroyed from nil.
+		It will detect when the object is destroyed from the game hierarchy, when it is destroyed from nil
+		 and when it is garbage-collected.
 		The call returns a pseudo-signal which can be used to check if the function is connected and can
 		 be used to disconnect the on-destroy-function without causing it to fire.
 		
