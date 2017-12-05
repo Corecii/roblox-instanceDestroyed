@@ -25,12 +25,12 @@
 		
 		pseudoSignal
 		
-			boolean         .connected
+			boolean         .connected, .Connected
 				If the function provided is still connected then this is true. When the object is destroyed
 				 this is set to false before the function is called.
 				This can only be false if the object is destroyed or if this is manually disconnected.
 			
-			void            :disconnect()
+			void            :disconnect(), :Disconnect()
 				Manually disconnects the connected function before the object is destroyed.
 				
 			RBXScriptSignal .connection
@@ -45,12 +45,15 @@ local cwrap = coroutine.wrap
 local disconnectMeta = {
 	__index = {
 		connected = true,
+		Connected = true,
 		disconnect = function(this)
 			this.connected = false
+			this.Connected = false
 			this.connection:Disconnect()
 		end
 	}
 }
+disconnectMeta.__index.Disconnect = disconnectMeta.__index.disconnect
 
 return function(instance, func)
 	local reference = Instance.new("ObjectValue")
@@ -63,6 +66,7 @@ return function(instance, func)
 	local changedFunction = function(obj, par)
 		if not reference.Value then
 			manualDisconnect.connected = false
+			manualDisconnect.Connected = false
 			return func(reference.Value)
 		elseif obj == reference.Value and not par then
 			obj = nil
@@ -72,6 +76,7 @@ return function(instance, func)
 			if (not reference.Value or not reference.Value.Parent) and manualDisconnect.connected then
 				if not con.connected then
 					manualDisconnect.connected = false
+					manualDisconnect.Connected = false
 					return func(reference.Value)
 				else
 					-- Since this event won't fire if the instance is destroyed while in nil, we have to check
@@ -84,6 +89,7 @@ return function(instance, func)
 						elseif not con.connected then
 							-- Otherwise, if we're disconnected it's because instance was destroyed
 							manualDisconnect.connected = false
+							manualDisconnect.Connected = false
 							return func(reference.Value)
 						elseif reference.Value.Parent then
 							-- If it's still connected then it's not destroyed. If it has a parent then
