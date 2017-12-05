@@ -42,26 +42,18 @@
 local cyield = coroutine.yield
 local cwrap = coroutine.wrap
 
-local nInstance = Instance.new
-local connect, destroy, fire = workspace.Changed.connect, workspace.Destroy
-do
-	local bindable = nInstance("BindableEvent")
-	fire = bindable.Fire
-	destroy(bindable)
-end
-
 local disconnectMeta = {
 	__index = {
 		connected = true,
 		disconnect = function(this)
 			this.connected = false
-			this.connection:disconnect()
+			this.connection:Disconnect()
 		end
 	}
 }
 
 return function(instance, func)
-	local reference = nInstance("ObjectValue")
+	local reference = Instance.new("ObjectValue")
 	reference.Value = instance
 	-- ObjectValues have weak-like Instance references
 	-- If the Instance can no longer be accessed then it can be collected despite
@@ -103,16 +95,16 @@ return function(instance, func)
 			end
 		end
 	end
-	con = connect(instance.AncestryChanged, changedFunction)
+	con = instance.AncestryChanged:Connect(changedFunction)
 	manualDisconnect.connection = con
 	instance = nil
 	-- If the object is currently in nil then we need to start our destroy checking loop
 	-- We need to spawn a new Roblox Lua thread right now before any other code runs.
 	--  spawn() starts it on the next cycle or frame, coroutines don't have ROBLOX's coroutine.yield handler
 	--  The only option left is BindableEvents, which run as soon as they are called and use ROBLOX's yield
-	local quickRobloxThreadSpawner = nInstance("BindableEvent")
-	connect(quickRobloxThreadSpawner.Event, changedFunction)
-	fire(quickRobloxThreadSpawner, reference.Value, reference.Value.Parent)
-	destroy(quickRobloxThreadSpawner)
+	local quickRobloxThreadSpawner = Instance.new("BindableEvent")
+	quickRobloxThreadSpawner.Event:Connect(changedFunction)
+	quickRobloxThreadSpawner:Fire(reference.Value, reference.Value.Parent)
+	quickRobloxThreadSpawner:Destroy()
 	return manualDisconnect
 end
